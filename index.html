@@ -18,7 +18,8 @@
   --shadow:0 16px 40px rgba(13,43,33,.10);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--sans);background:var(--page);color:var(--ink);padding-bottom:110px;min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{font-family:var(--sans);background:var(--page);color:var(--ink);padding-bottom:36px;min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased}
+body.has-fixed-submit{padding-bottom:110px}
 .container{max-width:1300px;margin:0 auto;padding:16px 20px}
 .hidden{display:none !important}
 
@@ -109,10 +110,18 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
 .stat-tile .stat-v{font-family:var(--serif);font-size:25px;font-weight:700;margin-top:5px;color:var(--accent);font-variant-numeric:tabular-nums}
 .stat-tile .stat-d{font-size:10.5px;margin-top:4px;font-weight:700;color:var(--muted)}
 
-.scroll-container{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-bottom:20px;background:var(--surface-2);max-height:74vh;overflow-y:auto}
+.scroll-container{overflow:visible;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;background:var(--surface-2)}
+.scroll-container::-webkit-scrollbar{height:9px}
+.scroll-container::-webkit-scrollbar-track{background:var(--surface-3);border-radius:0 0 12px 12px}
+.scroll-container::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
+.scroll-container::-webkit-scrollbar-thumb:hover{background:var(--muted-2)}
 .student-table{width:100%;border-collapse:collapse;background:transparent;min-width:1150px;font-size:12.5px}
 .student-table th,.student-table td{border:1px solid var(--line-soft);padding:8px 8px;text-align:center;white-space:nowrap}
 .student-table th{background:linear-gradient(155deg,var(--accent),var(--accent-deep));color:#fff;font-weight:700;position:sticky;top:0;z-index:10;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px}
+.student-table th:first-child{border-top-left-radius:11px}
+.student-table th:last-child{border-top-right-radius:11px}
+.student-table tbody tr:last-child td:first-child{border-bottom-left-radius:11px}
+.student-table tbody tr:last-child td:last-child{border-bottom-right-radius:11px}
 .student-table tr.new-student td{border-top:3px solid var(--ink)}
 .student-table td.cell-nm{text-align:left;min-width:170px;white-space:normal}
 .student-table td.cell-nm b{display:block}
@@ -263,8 +272,13 @@ input,select,textarea{border-radius:12px}
 .dots i{width:7px;height:7px;border-radius:50%;background:color-mix(in srgb,var(--good) 55%,transparent);border:1px solid var(--good)}
 .dots i.off{background:color-mix(in srgb,var(--danger) 50%,transparent);border-color:var(--danger)}
 
+@media (max-width:1200px){
+  .scroll-container{overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
+
 @media (max-width:640px){
-  body{padding-bottom:96px}
+  body{padding-bottom:32px}
+  body.has-fixed-submit{padding-bottom:100px}
   .container{padding:0 12px}
   .card{padding:16px;margin-bottom:12px;border-radius:12px}
   .master-tab{flex:1 1 100%;font-size:12.5px;padding:10px}
@@ -289,7 +303,7 @@ input,select,textarea{border-radius:12px}
 }
 </style>
 </head>
-<body>
+<body class="has-fixed-submit">
 
 <div id="offlineBanner" class="hidden"></div>
 
@@ -491,6 +505,7 @@ const LesTab = {
   show(id){
     document.querySelectorAll(".master-tab-content").forEach(t=>t.classList.toggle("active",t.id===id));
     document.querySelectorAll(".master-tab").forEach(b=>b.classList.toggle("active",b.id==="mtab-"+id.split("-")[1]));
+    document.body.classList.toggle("has-fixed-submit", id==="les-input");
   }
 };
 
