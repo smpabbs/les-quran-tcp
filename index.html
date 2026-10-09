@@ -213,8 +213,14 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
 .toast.toast-info{border-left:4px solid var(--accent)}
 @keyframes toastIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-.schip{display:inline-block;background:var(--surface-3);border:1px solid var(--line);border-radius:14px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--ink-soft);margin:3px 4px 3px 0}
+.schip{display:inline-block;background:var(--surface-3);border:1px solid var(--line);border-radius:14px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--ink-soft);margin:3px 4px 3px 0;cursor:pointer;transition:.15s ease}
+.schip:hover{border-color:var(--accent);color:var(--accent-deep);background:var(--accent-dim);transform:translateY(-1px)}
 .schip b{color:var(--gold);font-size:10px;font-weight:800;margin-left:5px}
+.btn-add-siswa{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px dashed var(--accent);border-radius:9px;background:var(--accent-dim);color:var(--accent);font-weight:800;font-size:11.5px;cursor:pointer;font-family:var(--sans);transition:.15s ease}
+.btn-add-siswa:hover{background:var(--accent);color:#fff}
+.btn-add-siswa .ico-sm{width:12px;height:12px}
+.btn-danger{padding:10px 16px;background:rgba(177,79,62,.09);color:var(--danger);border:1px solid rgba(177,79,62,.3);border-radius:9px;cursor:pointer;font-weight:700;font-family:var(--sans);transition:.15s ease}
+.btn-danger:hover{background:var(--danger);color:#fff}
 .les-note{margin-top:14px;padding:10px 12px;border-radius:10px;background:var(--accent-dim);border:1px solid rgba(51,68,125,.25);color:var(--accent-deep);font-size:11px;font-weight:600;display:flex;gap:8px;align-items:flex-start;line-height:1.5}
 .les-note svg{width:15px;height:15px;flex-shrink:0;margin-top:1px;stroke:var(--accent-deep);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #offlineBanner{max-width:1300px;margin:0 auto 14px;background:rgba(177,79,62,.1);border:1px solid rgba(177,79,62,.35);color:var(--danger);border-radius:12px;padding:12px 16px;font-size:13px;font-weight:700;text-align:center}
@@ -321,7 +327,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
     <div id="kelompokCards"></div>
     <div class="les-note">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      <span>Perubahan kelompok dilakukan langsung di Google Sheets pada tab <b>Kelompok</b> (kolom Guru / Nama Siswa / Kelas) — nama mengikuti ejaan Master Data. Setelah diubah, muat ulang halaman ini.</span>
+      <span>Kelompok dikelola langsung di halaman ini — <b>ketuk nama siswa</b> untuk mengubah nama/kelas, memindah guru, atau menghapus; tombol <b>+ Tambah Siswa</b> untuk mendaftarkan peserta baru. Mengubah nama otomatis menyamakan seluruh riwayat sesi siswa. Siswa yang dihapus tetap meninggalkan catatan di sheet Log.</span>
     </div>
   </div>
 </div>
@@ -336,8 +342,7 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
   </div>
 </div>
 
-<div class="modal" id="editModal" onclick="if(event.target===this)Modal.close('editModal')">
-  <div class="modal-content">
+<div class="modal" id="editModal" onclick="if(event.target===this)Modal.close('editModal')">  <div class="modal-content">
     <div class="modal-header">
       <div><h3>Ubah Entri</h3><div class="detail-modal-sub" id="editSub"></div></div>
       <span class="close" onclick="Modal.close('editModal')">&times;</span>
@@ -359,6 +364,31 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
     <div class="modal-actions">
       <button class="btn-cancel" onclick="Modal.close('editModal')">Batal</button>
       <button class="btn-submit" onclick="LesHasil.edSave()">Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="kelolaModal" onclick="if(event.target===this)Modal.close('kelolaModal')">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div><h3 id="kelolaTitle">Tambah Siswa</h3><div class="detail-modal-sub" id="kelolaSub"></div></div>
+      <span class="close" onclick="Modal.close('kelolaModal')">&times;</span>
+    </div>
+    <div class="edit-modal-body">
+      <div class="field"><label>Nama Siswa</label><input type="text" id="kgNama" placeholder="Sesuai ejaan Master Data"></div>
+      <div class="row2">
+        <div class="field"><label>Guru</label><select id="kgGuru"></select></div>
+        <div class="field"><label>Kelas</label><input type="text" id="kgKelas" placeholder="mis. 7A"></div>
+      </div>
+      <div class="les-note">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span>Mengubah nama/kelas otomatis menyamakan seluruh riwayat sesi siswa ini di Log &amp; Rekap. Menghapus siswa dari kelompok <b>tidak</b> menghapus riwayat di Log.</span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-danger hidden" id="kgHapus" onclick="LesKelompok.hapus()">Hapus</button>
+      <button class="btn-cancel" onclick="Modal.close('kelolaModal')">Batal</button>
+      <button class="btn-submit" onclick="LesKelompok.simpan()">Simpan</button>
     </div>
   </div>
 </div>
@@ -780,14 +810,83 @@ const LesHasil = {
 };
 
 const LesKelompok = {
+  _flat: [],
+  _mode: "add",
+  _old: null,
   render(){
+    this._flat = [];
     const total = GURU.reduce((a,g)=>a+g.siswa.length,0);
-    document.getElementById("kelompokSummary").textContent = `${GURU.length} kelompok · ${total} peserta · peserta les = siswa yang mengikuti jam tambahan melancarkan bacaan`;
-    document.getElementById("kelompokCards").innerHTML = GURU.map(g=>`
-      <div class="card">
-        <div class="card-header"><div class="card-title">${esc(g.nama)} <span class="badge">${g.siswa.length} siswa</span></div></div>
-        <div>${g.siswa.map(([nm,kl])=>`<span class="schip">${esc(nm)}<b>${esc(kl)}</b></span>`).join("")}</div>
-      </div>`).join("");
+    document.getElementById("kelompokSummary").textContent = `${GURU.length} kelompok · ${total} peserta · ketuk nama siswa untuk mengubah / memindah / menghapus`;
+    document.getElementById("kelompokCards").innerHTML = GURU.map(g=>{
+      const start = this._flat.length;
+      g.siswa.forEach(([nm,kl])=>this._flat.push({guru:g.nama,nm,kl}));
+      return `<div class="card">
+        <div class="card-header">
+          <div class="card-title">${esc(g.nama)} <span class="badge">${g.siswa.length} siswa</span></div>
+          <button class="btn-add-siswa" onclick="LesKelompok.tambah()"><svg class="ico-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Tambah Siswa</button>
+        </div>
+        <div>${g.siswa.map((s,j)=>`<span class="schip" onclick="LesKelompok.edit(${start+j})" title="Ketuk untuk kelola">${esc(s[0])}<b>${esc(s[1])}</b></span>`).join("")}</div>
+      </div>`;
+    }).join("");
+  },
+  _fillGuru(cur){
+    document.getElementById("kgGuru").innerHTML = GURU.map(g=>`<option value="${esc(g.nama)}" ${g.nama===cur?"selected":""}>${esc(g.nama)}</option>`).join("");
+  },
+  tambah(){
+    this._mode = "add"; this._old = null;
+    document.getElementById("kelolaTitle").textContent = "Tambah Siswa";
+    document.getElementById("kelolaSub").textContent = "Peserta les baru — nama harus sesuai ejaan Master Data";
+    document.getElementById("kgNama").value = "";
+    document.getElementById("kgKelas").value = "";
+    this._fillGuru(GURU.length ? GURU[0].nama : "");
+    document.getElementById("kgHapus").classList.add("hidden");
+    Modal.open("kelolaModal");
+  },
+  edit(i){
+    const s = this._flat[i];
+    if(!s) return;
+    this._mode = "edit";
+    this._old = { nama: s.nm, kelas: s.kl };
+    document.getElementById("kelolaTitle").textContent = "Kelola Siswa";
+    document.getElementById("kelolaSub").textContent = `${s.nm} · ${s.kl} · ${s.guru}`;
+    document.getElementById("kgNama").value = s.nm;
+    document.getElementById("kgKelas").value = s.kl;
+    this._fillGuru(s.guru);
+    document.getElementById("kgHapus").classList.remove("hidden");
+    Modal.open("kelolaModal");
+  },
+  async _reborn(){
+    await refreshData();
+    LesInput.init();
+    LesHasil.init();
+    this.render();
+  },
+  async simpan(){
+    const guru = document.getElementById("kgGuru").value;
+    const nama = document.getElementById("kgNama").value.trim();
+    const kelas = document.getElementById("kgKelas").value.trim().toUpperCase();
+    if(!nama || !kelas){ toast("Nama dan kelas wajib diisi","warning"); return; }
+    try{
+      if(this._mode === "add"){
+        await api("kelompok-add", { guru, nama, kelas });
+        toast("Siswa ditambahkan ke kelompok");
+      }else{
+        await api("kelompok-update", { namaLama:this._old.nama, kelasLama:this._old.kelas, guru, nama, kelas });
+        toast("Perubahan kelompok tersimpan");
+      }
+      await this._reborn();
+      Modal.close("kelolaModal");
+    }catch(e){}
+  },
+  async hapus(){
+    if(!this._old) return;
+    if(!confirm(`Hapus ${this._old.nama} dari kelompok les?\n\nRiwayat sesi di Log tetap tersimpan.`)) return;
+    try{
+      await api("kelompok-remove", { nama:this._old.nama, kelas:this._old.kelas });
+      await this._reborn();
+      Modal.close("kelolaModal");
+      toast("Siswa dihapus dari kelompok");
+    }catch(e){}
   }
 };
 
