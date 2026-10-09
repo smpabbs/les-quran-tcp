@@ -6,16 +6,16 @@
 <title>Les Qur'an TCP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --page:#ECE6D6;--surface:#F7F2E4;--surface-2:#FFFCF4;--surface-3:#EFE7CE;--surface-4:#E4D9B8;
-  --line:#D8C89B;--line-soft:#E7DCB8;--ink:#252131;--ink-soft:#544E63;--muted:#7A7188;--muted-2:#9C93A8;
-  --accent:#33447D;--accent-deep:#212C56;--accent-soft:#DEE2F0;--accent-dim:rgba(51,68,125,.13);
-  --gold:#AD7E37;--gold-soft:#C89C55;--good:#2E8F5C;--warn:#BD7E2A;--danger:#B14F3E;--info:#3E7F8A;
-  --serif:'Amiri',Georgia,'Times New Roman',serif;
-  --sans:'Manrope','Segoe UI',Roboto,system-ui,sans-serif;
-  --shadow:0 16px 40px rgba(37,33,49,.14);
+  --page:#EAF6F0;--surface:#F7FCF9;--surface-2:#FFFFFF;--surface-3:#E0F1E8;--surface-4:#CBE8DA;
+  --line:#C8E3D6;--line-soft:#DFF0E7;--ink:#0D2B21;--ink-soft:#3D5A4E;--muted:#5F7A6F;--muted-2:#8FA79C;
+  --accent:#0C7A5B;--accent-deep:#095C45;--accent-soft:#D7F0E5;--accent-dim:rgba(12,122,91,.10);
+  --gold:#D9922E;--gold-soft:#E8AC55;--good:#0C7A5B;--warn:#D9922E;--danger:#C7452F;--info:#20809A;
+  --serif:'Plus Jakarta Sans','Segoe UI',sans-serif;
+  --sans:'Plus Jakarta Sans','Segoe UI',Roboto,system-ui,sans-serif;
+  --shadow:0 16px 40px rgba(13,43,33,.10);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--sans);background:var(--page);color:var(--ink);padding-bottom:110px;min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -225,6 +225,44 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.8}
 .les-note svg{width:15px;height:15px;flex-shrink:0;margin-top:1px;stroke:var(--accent-deep);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #offlineBanner{max-width:1300px;margin:0 auto 14px;background:rgba(177,79,62,.1);border:1px solid rgba(177,79,62,.35);color:var(--danger);border-radius:12px;padding:12px 16px;font-size:13px;font-weight:700;text-align:center}
 
+.siswa-list{background:transparent;border:none;overflow:visible}
+.srow{border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden;background:var(--surface-2);position:relative;box-shadow:0 2px 8px rgba(13,43,33,.05)}
+.srow + .srow{border-top:1px solid var(--line)}
+.srow::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.srow.j1::before{background:#7F5AE0}
+.srow.j2::before{background:var(--accent)}
+.srow.j3::before{background:var(--gold)}
+.srow.absent::before{background:var(--danger)}
+.srow.absent{background:color-mix(in srgb,var(--danger) 4%,var(--surface-2))}
+.master-tabs{border-radius:999px;padding:5px;gap:4px}
+.master-tab{border-radius:999px}
+.card{border-radius:18px;box-shadow:0 6px 18px rgba(13,43,33,.06)}
+.app-header{border-radius:18px}
+.stat-tile{border-radius:16px}
+input,select,textarea{border-radius:12px}
+.btn-submit{border-radius:14px}
+.btn-export{border-radius:999px}
+.seg{border-radius:999px}
+.seg-btn{padding:7px 14px}
+.sav{border-radius:12px}
+.ocard{border-radius:18px}
+.ocard-h .oav{border-radius:12px}
+.scroll-container{border-radius:14px}
+.modal-content{border-radius:18px}
+.toast{border-radius:12px}
+.filter{border-radius:14px}
+.summary{border-radius:999px}
+.progress-fill{background:linear-gradient(90deg,#0C7A5B,#11A077)}
+.progress-fill.full{background:linear-gradient(90deg,#0C7A5B,#2FC08D)}
+.header-icon{color:#F0C069}
+.jilid-tag.j2{color:var(--accent-deep)}
+.ring{width:46px;height:46px;position:relative;flex-shrink:0}
+.ring svg{display:block}
+.ring .rpct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:var(--accent)}
+.dots{display:inline-flex;gap:4px;align-items:center;vertical-align:middle;margin-left:6px}
+.dots i{width:7px;height:7px;border-radius:50%;background:color-mix(in srgb,var(--good) 55%,transparent);border:1px solid var(--good)}
+.dots i.off{background:color-mix(in srgb,var(--danger) 50%,transparent);border-color:var(--danger)}
+
 @media (max-width:640px){
   body{padding-bottom:96px}
   .container{padding:0 12px}
@@ -420,6 +458,13 @@ const progressOf = e => {
   const cur = e.halamanSampai || 0;
   return { tot, cur, pct: Math.min(100, Math.round(cur/tot*100)) };
 };
+const ringHTML = (prog, hadirPct) => {
+  if(!prog) return `<span class="otot"><span class="ov">—</span><span class="ol">posisi</span></span>`;
+  const r = 19, c = 2*Math.PI*r, off = c*(1-prog.pct/100);
+  const col = hadirPct !== null && hadirPct < 50 ? "var(--danger)" : (prog.pct>=100 ? "var(--good)" : "var(--accent)");
+  return `<span class="ring"><svg width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="${r}" fill="none" stroke="var(--surface-3)" stroke-width="5"/><circle cx="23" cy="23" r="${r}" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 23 23)"/></svg><span class="rpct" style="color:${col}">${prog.pct}%</span></span>`;
+};
+const dotsHTML = arr => `<span class="dots" title="Sesi terakhir (hijau=hadir)">${arr.map(h=>`<i class="${h?"":"off"}"></i>`).join("")}</span>`;
 
 function toast(msg,type="success"){
   const el = document.createElement("div");
@@ -546,6 +591,11 @@ const LesInput = {
   },
   sum(el){
     const row = el.closest(".srow");
+    row.classList.remove("j1","j2","j3");
+    if(row.dataset.hadir === "1"){
+      const jv = row.querySelector(".f-jilid").value;
+      if(jv) row.classList.add("j"+jv.slice(-1));
+    }
     const st = row.querySelector(".st");
     if(row.dataset.hadir === "0"){
       const a = row.querySelector(".f-alasan").value;
@@ -716,8 +766,8 @@ const LesHasil = {
       return `<div class="ocard">
         <div class="ocard-h">
           <span class="oav">${initials(s.nama)}</span>
-          <span class="owho"><span class="onm">${esc(s.nama)}</span><span class="okl">${esc(s.kelas)} · ${esc(s.guru)} · ${pct}% hadir</span></span>
-          <span class="otot"><span class="ov">${prog ? prog.pct+"%" : "—"}</span><span class="ol">${prog ? prog.cur+"/"+prog.tot+" hlm" : "posisi"}</span></span>
+          <span class="owho"><span class="onm">${esc(s.nama)}</span><span class="okl">${esc(s.kelas)} · ${esc(s.guru)} · ${pct}% hadir${s.entri.length ? dotsHTML(s.entri.slice(0,8).map(e=>e.hadir)) : ""}</span></span>
+          ${ringHTML(prog, pct)}
         </div>
         <div class="obar"><i class="${prog&&prog.pct>=100?"full":""}" style="width:${prog?prog.pct:0}%"></i></div>
         ${gHtml}
